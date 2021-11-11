@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] float Speed;
     [SerializeField] float SubSpeed;
     [SerializeField] float MaxSpeed;
-
+    public Vector3 Vec { get { return vec; } }
     private Vector3 pos;
     private Vector3 vec;
     private Vector3 ang;
