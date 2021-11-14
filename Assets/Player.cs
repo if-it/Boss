@@ -8,12 +8,18 @@ public class Player : MonoBehaviour
     [SerializeField] float Speed;
     [SerializeField] float SubSpeed;
     [SerializeField] float MaxSpeed;
+    [SerializeField] float AddPower;
     public Vector3 Vec { get { return vec; } }
+    public float Power { get { return power; } }
+    public int Skill { get { return skill; } set { skill = value; } }
     private Vector3 pos;
     private Vector3 vec;
     private Vector3 ang;
     private Vector2 key;
     private bool up, down, left, right;
+    private Vector3 latestPos;
+    private int skill;
+    private float power;
     void Start()
     {
         Application.targetFrameRate = 60;
@@ -25,6 +31,8 @@ public class Player : MonoBehaviour
         down = false;
         left = false;
         right = false;
+        skill = 0;
+        latestPos = pos;
     }
 
     // Update is called once per frame
@@ -33,9 +41,12 @@ public class Player : MonoBehaviour
         KeyInput();
         pos = gameObject.transform.position;
         ang = new Vector3();
+
+
         if (right)
         {
             ang.x = 1;
+
         }
         else if (left)
         {
@@ -104,8 +115,13 @@ public class Player : MonoBehaviour
 
 
         pos += vec;
-
+        Vector3 diff = pos - latestPos;
+        if (diff.magnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.LookRotation(diff);
+        }
         gameObject.transform.position = pos;
+        latestPos = pos;
     }
 
     private void KeyInput()
@@ -148,6 +164,15 @@ public class Player : MonoBehaviour
         if (LStickY < 0 || key.y == -1)
         {
             down = true;
+        }
+        if ((Input.GetKey(KeyCode.Space) || Input.GetKey("joystick button 0")))
+        {
+            if(skill==0)power += AddPower;
+            if (skill == 3) skill = 4;
+        }
+        if (skill == 0 && (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp("joystick button 0")))
+        {
+            skill = 1;
         }
     }
 }
